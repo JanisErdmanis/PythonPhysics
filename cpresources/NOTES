@@ -1,0 +1,20 @@
+Sources for data sets:
+
+Altitude data (altitude.txt): NOAA 2-minute Gridded Global Relief data set.
+For details see C. Amante and B. W. Eakins, ETOPO1 1 Arc-Minute Global
+Relief Model: Procedures, Data Sources and Analysis. NOAA Technical
+Memorandum NESDIS NGDC-24, March 2009, or visit
+http://www.ngdc.noaa.gov/mgg/global/global.html
+
+Star magnitude/temperature (stars.txt): HYG Database, a composite of data
+from Hipparcos and the Yale Bright Star and Gliese catalogs, compiled by
+David Nash.  See http://www.astronexus.com/node/34
+
+Sunspot numbers (sunspots.txt): NOAA National Geophysical Data Center,
+based on a data set maintained and published by Royal Observatory of
+Belgium's Solar Influences Data Analysis Center.  See
+http://www.ngdc.noaa.gov/stp/solar/ssndata.html
+
+Recordings of piano and trumpet notes (piano.txt and trumpet.txt):
+University of Iowa Electronic Music Studios.  See
+http://theremin.music.uiowa.edu/MIS.html

@@ -1,0 +1,888 @@
+\documentclass[12pt]{article}
+
+\include{setup}
+\setcounter{chapter}{6}
+
+\begin{document}
+
+\noindent {\LARGE\textsc{Computational Physics}}\par
+\bigskip
+\noindent {\large\textsc{Exercises for Chapter \arabic{chapter}}}\par
+\noindent\hrulefill
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%                                                                %%%
+%%%     COMPUTATIONAL PHYSICS, M. NEWMAN, CHAPTER 6, EXERCISES     %%%
+%%%                                                                %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{exercises}
+
+%%% Exercise 6.1 %%%
+
+\exercise \textbf{A circuit of resistors}
+
+\exskip Consider the following circuit of
+resistors:
+\begin{center}
+\includegraphics[width=6cm]{resistor.eps}
+\end{center}
+All the resistors have the same resistance~$R$.  The power rail at the top
+is at voltage~$V_+=5\,$V.  What are the other four voltages, $V_1$
+to~$V_4$?
+
+To answer this question we use Ohm's law and the Kirchhoff current
+law, which says that the total net current flow out of (or into) any
+junction in a circuit must be zero.  Thus for the junction at
+voltage~$V_1$, for instance, we have
+\begin{displaymath}
+{V_1-V_2\over R} + {V_1-V_3\over R} + {V_1-V_4\over R} + {V_1-V_+\over R}
+= 0,
+\end{displaymath}
+or equivalently
+\begin{displaymath}
+4V_1 - V_2 - V_3 - V_4 = V_+.
+\end{displaymath}
+
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\item Write similar equations for the other three junctions with unknown
+voltages.
+\item Write a program to solve the four resulting equations using Gaussian
+  elimination and hence find the four voltages (or you can modify a program
+  you already have, such as the program \verb|gausselim.py| in
+  Example~6.1).
+\end{enumerate}
+
+
+%%% Exercise 6.2 %%%
+
+\exercise
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\item Modify the program \verb|gausselim.py| in Example~6.1 to incorporate
+  partial pivoting (or you can write your own program from scratch if you
+  prefer).  Run your program and demonstrate that it gives the same answers
+  as the original program when applied to Eq.~(6.1)
+\item Modify the program to solve the equations in~(6.17) and show that it
+  can find the solution to these as well, even though Gaussian elimination
+  without pivoting fails.
+\end{enumerate}
+
+
+%%% Exercise 6.3 %%%
+
+\exercise \textbf{LU decomposition}
+
+\exskip This exercise invites you to write your own
+program to solve simultaneous equations using the method of LU
+decomposition.
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\item Starting, if you wish, with the program for Gaussian elimination in
+  Example~6.1 on page~218, write a Python function that calculates the LU
+  decomposition of a matrix.  The calculation is same as that for Gaussian
+  elimination, except that at each step of the calculation you need to
+  extract the appropriate elements of the matrix and assemble them to form
+  the lower diagonal matrix~$\mat{L}$ of Eq.~(6.32).  Test your function by
+  calculating the LU decomposition of the matrix from Eq.~(6.2), then
+  multiplying the $\mat{L}$ and $\mat{U}$ you get and verifying that you
+  recover the original matrix once more.
+\item Build on your LU decomposition function to create a complete program
+  to solve Eq.~(6.2) by performing a double backsubstitution as described
+  in this section.  Solve the same equations using the function
+  \verb|solve| from the \verb|numpy| package and verify that you get the
+  same answer either way.
+\item If you're feeling ambitious, try your hand at LU decomposition with
+  partial pivoting.  Partial pivoting works in the same way for LU
+  decomposition as it does for Gaussian elimination, swapping rows to get
+  the largest diagonal element as explained in Section~6.1.3, but the
+  extension to LU decomposition requires two additional steps.  First,
+  every time you swap two rows you also have to swap the same rows in the
+  matrix~$\mat{L}$.  Second, when you use your LU decomposition to solve a
+  set of equations~$\mat{A}\vec{x}=\vec{v}$ you will also need to perform
+  the same sequence of swaps on the vector~$\vec{v}$ on the right-hand
+  side.  This means you need to record the swaps as you are doing the
+  decomposition so that you can recreate them later.  The simplest way to
+  do this is to set up a list or array in which the value of the $i$th
+  element records the row you swapped with on the $i$th step of the
+  process.  For instance, if you swapped the first row with the second then
+  the second with the fourth, the first two elements of the list would be 2
+  and~4.  Solving a set of equations for given~$\vec{v}$ involves first
+  performing the required sequence of swaps on the elements of~$\vec{v}$
+  then performing a double backsubstitution as usual.  (In ordinary
+  Gaussian elimination with pivoting, one swaps the elements of~$\vec{v}$
+  as the algorithm proceeds, rather than all at once, but the difference
+  has no effect on the results, so it's fine to perform all the swaps at
+  once if we wish.)
+
+  Modify the function you wrote for part~(a) to perform LU decomposition
+  with partial pivoting.  The function should return the matrices $\mat{L}$
+  and $\mat{U}$ for the LU decomposition of the swapped matrix, plus a list
+  of the swaps made.  Then modify the rest of your program to solve
+  equations of the form~$\mat{A}\vec{x}=\vec{v}$ using LU decomposition
+  with pivoting.  Test your program on the example from Eq.~(6.17), which
+  cannot be solved without pivoting because of the zero in the first
+  element of the matrix.  Check your results against a solution of the same
+  equations using the \verb|solve| function from \verb|numpy|.
+\end{enumerate}
+LU decomposition with partial pivoting is the most widely used method for
+the solution of simultaneous equations in practice.  Precisely this method
+is used in the function \verb|solve| from the \verb|numpy| package.
+There's nothing wrong with using the \verb|solve| function---it's well
+written, fast, and convenient.  But it does nothing you haven't already
+done yourself if you've solved this exercise.
+
+
+%%% Exercise 6.4 %%%
+
+\exercise Write a program to solve the resistor network problem of
+Exercise~6.1 on page~220 using the function \verb|solve| from
+\verb|numpy.linalg|.  If you also did Exercise~6.1, you should check that
+you get the same answer both times.
+
+
+%%% Exercise 6.5 %%%
+
+\exercise Here's a more complicated circuit problem:
+\medskip
+\begin{center}
+\includegraphics[width=9.5cm]{rescap.eps}
+\end{center}
+The voltage~$V_+$ is time-varying and sinusoidal of the form $V_+ = x_+
+\e^{\ii\omega t}$ with $x_+$ a constant.  The resistors in the circuit can
+be treated using Ohm's law as usual.  For the capacitors the charge~$Q$ and
+voltage~$V$ across them are related by the capacitor law $Q=CV$, where $C$
+is the capacitance.  Differentiating both sides of this expression gives
+the current~$I$ flowing in on one side of the capacitor and out on the
+other:
+\begin{displaymath}
+I = {\dd Q\over\dd t} = C {\dd V\over\dd t}.
+\end{displaymath}
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\item Assuming the voltages at the points labeled 1, 2, and~3 are of the form
+$V_1 = x_1 \e^{\ii\omega t}$, $V_2 = x_2 \e^{\ii\omega t}$, and $V_3 = x_3
+\e^{\ii\omega t}$, apply Kirchhoff's law at each of the three points, along
+with Ohm's law and the capacitor law, to show that the constants $x_1$,
+$x_2$, and~$x_3$ satisfy the equations
+\begin{align*}
+\biggl( {1\over R_1} + {1\over R_4} + \ii\omega C_1 \biggr) x_1
+  - \ii\omega C_1 x_2 &= {x_+\over R_1}\,, \\
+- \ii\omega C_1 x_1
++ \biggl( {1\over R_2} + {1\over R_5} + \ii\omega C_1 + \ii\omega C_2
+          \biggr) x_2 - \ii\omega C_2 x_3 &= {x_+\over R_2}\,, \\
+- \ii\omega C_2 x_2
++ \biggl( {1\over R_3} + {1\over R_6} + \ii\omega C_2 \biggr) x_3
+  &= {x_+\over R_3}\,.
+\end{align*}
+\item Write a program to solve for $x_1$, $x_2$, and~$x_3$ when
+\begin{align*}
+R_1 &= R_3 = R_5 = 1\,\mathrm{k}\Omega, \\
+R_2 &= R_4 = R_6 = 2\,\mathrm{k}\Omega, \\
+C_1 &= 1\,\mu\mathrm{F},\qquad C_2 = 0.5\,\mu\mathrm{F}, \\
+x_+ &= 3\,\mathrm{V},\qquad \omega = 1000\,\mathrm{s}^{-1}.
+\end{align*}
+Notice that the matrix for this problem has complex elements.  You will
+need to define a complex array to hold it, but you can still use the
+\verb|solve| function just as before to solve the equations---it works with
+either real or complex arguments.  Using your solution have your program
+calculate and print the amplitudes of the three voltages $V_1$, $V_2$,
+and~$V_3$ and their phases in degrees.  (Hint: You may find the functions
+\verb|polar| or \verb|phase| in the \verb|cmath| package useful.  If
+\verb|z| is a complex number then ``\verb|r,theta = polar(z)|'' will return
+the modulus and phase (in radians) of~\verb|z| and
+``\verb|theta = phase(z)|'' will return the phase alone.)
+\end{enumerate}
+
+
+%%% Exercise 6.6 %%%
+
+\exercise Starting with either the program \verb|springs.py| on page~237 or
+\verb|springsb.py| on page~238, remove the code that makes a graph of the
+results and replace it with code that creates an animation of the masses as
+they vibrate back and forth, their displacements relative to their resting
+positions being given by the real part of Eq.~(6.53).  For clarity, assume
+that the resting positions are two units apart in a horizontal line.  At a
+minimum your animation should show each of the individual masses, perhaps
+as small spheres.  (Spheres of radius about 0.2 or 0.3 seem to work well.)
+
+
+%%% Exercise 6.7 %%%
+
+\exercise \textbf{A chain of resistors}
+
+\exskip Consider a long chain of resistors
+wired up like this:
+\medskip
+\begin{center}
+\includegraphics[width=13cm]{reschain.eps}
+\end{center}
+All the resistors have the same resistance~$R$.  The power rail at the top
+is at voltage~$V_+=5$V.  The problem is to find the voltages $V_1\ldots
+V_N$ at the internal points in the circuit.
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\item Using Ohm's law and the Kirchhoff current law, which says that the
+  total net current flow out of (or into) any junction in a circuit must be
+  zero, show that the voltages $V_1\ldots V_N$ satisfy the equations
+\begin{align*}
+3V_1 - V_2 - V_3 &= V_+, \\
+-V_1 + 4V_2 - V_3 - V_4 &= V_+, \\
+                        &\hspace{0.6em}\vdots \\
+-V_{i-2} - V_{i-1} + 4V_i - V_{i+1} - V_{i+2} &= 0, \\
+                        &\hspace{0.6em}\vdots \\
+-V_{N-3} - V_{N-2} + 4V_{N-1} - V_N &= 0, \\
+-V_{N-2} - V_{N-1} + 3V_N &= 0.
+\end{align*}
+Express these equations in vector form~$\mat{A}\vec{v} = \vec{w}$ and find
+the values of the matrix~$\mat{A}$ and the vector~$\vec{w}$.
+\item Write a program to solve for the values of the~$V_i$ when there are
+  $N=6$ internal junctions with unknown voltages.  (Hint: All the values of
+  $V_i$ should lie between zero and $5$V.  If they don't, something is
+  wrong.)
+\item Now repeat your calculation for the case where there are $N=10\,000$
+  internal junctions.  This part is not possible using standard tools like
+  the \verb|solve| function.  You need to make use of the fact that the
+  matrix~$\vec{A}$ is banded and use the \verb|banded| function from the
+  file \verb|banded.py|, discussed in Appendix~E.
+\end{enumerate}
+
+
+%%% Exercise 6.8 %%%
+
+\exercise \textbf{The QR algorithm}
+
+\exskip In this exercise you'll write a
+program to calculate the eigenvalues and eigenvectors of a real symmetric
+matrix using the QR algorithm.  The first challenge is to write a program
+that finds the QR decomposition of a matrix.  Then we'll use that
+decomposition to find the eigenvalues.
+
+As described above, the QR decomposition expresses a real square
+matrix~$\mat{A}$ in the form $\mat{A}=\mat{Q}\mat{R}$, where $\mat{Q}$ is
+an orthogonal matrix and $\mat{R}$ is an upper-triangular matrix.  Given an
+$N\times N$ matrix~$\mat{A}$ we can compute the QR decomposition as
+follows.
+
+Let us think of the matrix as a set of $N$ column
+vectors~$\vec{a}_0\ldots\vec{a}_{N-1}$ thus:
+\begin{displaymath}
+\mat{A} = \begin{pmatrix}
+            | & | & | & \cdots \\
+            \vec{a}_0 & \vec{a}_1 & \vec{a}_2 & \cdots \\
+            | & | & | & \cdots
+          \end{pmatrix},
+\end{displaymath}
+where we have numbered the vectors in Python fashion, starting from zero,
+which will be convenient when writing the program.  We now define two new
+sets of vectors $\vec{u}_0\ldots\vec{u}_{N-1}$ and
+$\vec{q}_0\ldots\vec{q}_{N-1}$ as follows:
+\begin{align*}
+\vec{u}_0 &= \vec{a}_0,
+  & \vec{q}_0 = {\vec{u}_0\over|\vec{u}_0|}\,,\qquad \\
+\vec{u}_1 &= \vec{a}_1 - (\vec{q}_0\cdot\vec{a}_1) \vec{q}_0,
+  & \vec{q}_1 = {\vec{u}_1\over|\vec{u}_1|}\,, \qquad \\
+\vec{u}_2 &= \vec{a}_2 - (\vec{q}_0\cdot\vec{a}_2) \vec{q}_0
+             - (\vec{q}_1\cdot\vec{a}_2) \vec{q}_1,
+  & \vec{q}_2 = {\vec{u}_2\over|\vec{u}_2|}\,, \qquad
+\end{align*}
+and so forth.  The general formulas for calculating~$\vec{u}_i$ and
+$\vec{q}_i$ are
+\begin{displaymath}
+\vec{u}_i = \vec{a}_i - \sum_{j=0}^{i-1} (\vec{q}_j\cdot\vec{a}_i)
+            \vec{q}_j, \qquad
+\vec{q}_i = {\vec{u}_i\over|\vec{u}_i|}.
+\end{displaymath}
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\item Show, by induction or otherwise, that the vectors~$\vec{q}_i$ are
+  orthonormal, i.e.,~that they satisfy
+\begin{displaymath}
+\vec{q}_i\cdot\vec{q}_j = \biggl\lbrace\begin{array}{ll}
+                            1 & \quad\mbox{if $i=j$,} \\
+                            0 & \quad\mbox{if $i\ne j$.}
+                          \end{array}
+\end{displaymath}
+\end{enumerate}
+Now, rearranging the definitions of the vectors, we have
+\begin{align*}
+\vec{a}_0 &= |\vec{u}_0|\,\vec{q}_0, \\
+\vec{a}_1 &= |\vec{u}_1|\,\vec{q}_1 + (\vec{q}_0\cdot\vec{a}_1) \vec{q}_0, \\
+\vec{a}_2 &= |\vec{u}_2|\,\vec{q}_2 + (\vec{q}_0\cdot\vec{a}_2) \vec{q}_0
+              + (\vec{q}_1\cdot\vec{a}_2) \vec{q}_1,
+\end{align*}
+and so on.  Or we can group the vectors~$\vec{q}_i$ together as the
+columns of a matrix and write all of these equations as a single matrix
+equation
+\begin{displaymath}
+\mat{A} = \begin{pmatrix}
+            | & | & | & \cdots \\
+            \vec{a}_0 & \vec{a}_1 & \vec{a}_2 & \cdots \\
+            | & | & | & \cdots
+          \end{pmatrix}
+ =
+\begin{pmatrix}
+  | & | & | & \cdots \\
+  \vec{q}_0 & \vec{q}_1 & \vec{q}_2 & \cdots \\
+  | & | & | & \cdots
+\end{pmatrix}
+\begin{pmatrix}
+|\vec{u}_0| & \vec{q}_0\cdot\vec{a}_1 & \vec{q}_0\cdot\vec{a}_2 & \cdots \\
+0           & |\vec{u}_1| & \vec{q}_1\cdot\vec{a}_2 & \cdots \\
+0           & 0           & |\vec{u}_2| & \cdots
+\end{pmatrix}.
+\end{displaymath}
+(If this looks complicated it's worth multiplying out the matrices on the
+right to verify for yourself that you get the correct expressions for
+the~$\vec{a}_i$.)
+
+Notice now that the first matrix on the right-hand side of this equation,
+the matrix with columns~$\vec{q}_i$, is orthogonal, because the
+vectors~$\vec{q}_i$ are orthonormal, and the second matrix is upper
+triangular.  In other words, we have found the QR decomposition
+$\mat{A}=\mat{Q}\mat{R}$.  The matrices $\mat{Q}$ and $\mat{R}$ are
+\begin{displaymath}
+\mat{Q} =
+\begin{pmatrix}
+  | & | & | & \cdots \\
+  \vec{q}_0 & \vec{q}_1 & \vec{q}_2 & \cdots \\
+  | & | & | & \cdots
+\end{pmatrix}
+,\qquad
+\mat{R} =
+\begin{pmatrix}
+|\vec{u}_0| & \vec{q}_0\cdot\vec{a}_1 & \vec{q}_0\cdot\vec{a}_2 & \cdots \\
+0           & |\vec{u}_1| & \vec{q}_1\cdot\vec{a}_2 & \cdots \\
+0           & 0           & |\vec{u}_2| & \cdots
+\end{pmatrix}.
+\end{displaymath}
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\setcounter{enumi}{1}
+\item Write a Python function that takes as its argument a real square
+  matrix~$\mat{A}$ and returns the two matrices~$\mat{Q}$ and~$\mat{R}$
+  that form its QR decomposition.  As a test case, try out your function on
+  the matrix
+\begin{displaymath}
+\setlength{\arraycolsep}{4pt}
+\mat{A} = \begin{pmatrix}
+            1 & 4 & 8 & 4 \\
+            4 & 2 & 3 & 7 \\
+            8 & 3 & 6 & 9 \\
+            4 & 7 & 9 & 2
+          \end{pmatrix}.
+\end{displaymath}
+Check the results by multiplying $\mat{Q}$ and $\mat{R}$ together to
+recover the original matrix~$\mat{A}$ again.
+\item Using your function, write a complete program to calculate the
+  eigenvalues and eigenvectors of a real symmetric matrix using the QR
+  algorithm.  Continue the calculation until the magnitude of every
+  off-diagonal element of the matrix is smaller than~$10^{-6}$.  Test your
+  program on the example matrix above.  You should find that the
+  eigenvalues are $1$, $21$, $-3$, and~$-8$.
+\end{enumerate}
+
+
+%%% Exercise 6.9 %%%
+
+\exercise \textbf{Asymmetric quantum well}
+
+\exskip Quantum mechanics can be formulated as a matrix problem and solved
+on a computer using linear algebra methods.  Suppose, for example, we have
+a particle of mass~$M$ in a one-dimensional quantum well of width~$L$, but
+not a square well like the examples you've probably seen before.  Suppose
+instead that the potential~$V(x)$ varies somehow inside the well: \medskip
+\begin{center}
+\includegraphics[width=8cm]{well.eps}
+\end{center}
+We cannot solve such problems analytically in general, but we can solve
+them on the computer.
+
+In a pure state of energy~$E$, the spatial part of the wavefunction
+obeys the time-independent Schr\"odinger equation $\hat{H}\psi(x) =
+E\psi(x)$, where the Hamiltonian operator~$\hat{H}$ is given by
+\begin{displaymath}
+\hat{H} = - {\hbar^2\over2M}\,{\dd^2\over\dd x^2} + V(x).
+\end{displaymath}
+For simplicity, let's assume that the walls of the well are infinitely
+high, so that the wavefunction is zero outside the well, which means it
+must \emph{go to} zero at $x=0$ and $x=L$.  In that case, the wavefunction
+can be expressed as a Fourier sine series thus:
+\begin{displaymath}
+\psi(x) = \sum_{n=1}^\infty \psi_n \sin {\pi n x\over L},
+\end{displaymath}
+where $\psi_1,\psi_2,\ldots$ are the Fourier coefficients.
+
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\item Noting that, for $m,n$ positive integers
+\begin{displaymath}
+\int_0^L \sin {\pi m x\over L} \,\sin{\pi n x\over L} \>\dd x
+  = \begin{cases}
+      L/2 & \qquad\mbox{if $m=n$,} \\
+      0          & \qquad\mbox{otherwise,}
+    \end{cases}
+\end{displaymath}
+show that the Schr\"odinger equation $\hat{H}\psi = E\psi$ implies that
+\begin{displaymath}
+\sum_{n=1}^\infty \psi_n \int_0^L \sin{\pi m x\over L}
+                  \hat{H}\sin{\pi n x\over L} \>\dd x
+  = \half L E \psi_m.
+\end{displaymath}
+Hence, defining a matrix~$\mat{H}$ with elements
+\begin{align*}
+H_{mn} &= {2\over L} \int_0^L \sin{\pi m x\over L}
+          \hat{H}\sin{\pi n x\over L} \>\dd x \nonumber\\
+       &= {2\over L} \int_0^L \sin{\pi m x\over L}
+          \biggl[ - {\hbar^2\over2M}\,{\dd^2\over\dd x^2} + V(x) \biggr]
+          \sin{\pi n x\over L} \>\dd x,
+\end{align*}
+show that Schr\"odinger's equation can be written in matrix form as
+$\mat{H}\boldsymbol{\psi} = E\boldsymbol{\psi}$, where $\boldsymbol{\psi}$
+is the vector~$(\psi_1,\psi_2,\ldots)$.  Thus $\boldsymbol{\psi}$~is an
+eigenvector of the \defn{Hamiltonian matrix}~$\mat{H}$ with eigenvalue~$E$.
+If we can calculate the eigenvalues of this matrix, then we know the
+allowed energies of the particle in the well.
+\item For the case $V(x)=ax/L$, evaluate the integral in $H_{mn}$
+  analytically and so find a general expression for the matrix
+  element~$H_{mn}$.  Show that the matrix is real and symmetric.  You'll
+  probably find it useful to know that
+\begin{displaymath}
+\hspace{-2em}
+\int_0^L x \sin{\pi m x\over L} \sin{\pi n x\over L} \>\dd x
+  = \begin{cases}
+      0 & \quad\mbox{if $m\ne n$ and both even or both odd,} \\
+      {\displaystyle-\biggl({2L\over\pi}\biggr)^2{mn\over(m^2-n^2)^2}}
+        & \quad\mbox{if $m\ne n$ and one is even, one is odd,} \\
+      L^2/4 & \quad\mbox{if $m=n$.}
+    \end{cases}
+\end{displaymath}
+Write a Python program to evaluate your expression for~$H_{mn}$ for
+arbitrary $m$ and~$n$ when the particle in the well is an electron, the
+well has width $5\,$\AA, and $a=10\,$eV.  (The mass and charge of an
+electron are $9.1094\times10^{-31}\,$kg and $1.6022\times10^{-19}\,$C
+respectively.)
+\item The matrix~$\mat{H}$ is in theory infinitely large, so we cannot
+  calculate all its eigenvalues.  But we can get a pretty accurate solution
+  for the first few of them by cutting off the matrix after the first few
+  elements.  Modify the program you wrote for part~(b) above to create a
+  $10\times10$ array of the elements of~$\mat{H}$ up to~$m,n=10$.
+  Calculate the eigenvalues of this matrix using the appropriate function
+  from \verb|numpy.linalg| and hence print out, in units of electron volts,
+  the first ten energy levels of the quantum well, within this
+  approximation.  You should find, for example, that the ground-state
+  energy of the system is around $5.84\,$eV.  (Hint: Bear in mind that
+  matrix indices in Python start at zero, while the indices in standard
+  algebraic expressions, like those above, start at one.  You will need to
+  make allowances for this in your program.)
+\item Modify your program to use a $100\times100$ array instead and again
+  calculate the first ten energy eigenvalues.  Comparing with the values
+  you calculated in part~(c), what do you conclude about the accuracy of
+  the calculation?
+\item Now modify your program once more to calculate the
+  wavefunction~$\psi(x)$ for the ground state and the first two excited
+  states of the well.  Use your results to make a graph with three curves
+  showing the probability density~$|\psi(x)|^2$ as a function of~$x$ in
+  each of these three states.  Pay special attention to the normalization
+  of the wavefunction---it should satisfy the condition $\int_0^L
+  |\psi(x)|^2 \>\dd x=1$.  Is this true of your wavefunction?
+\end{enumerate}
+
+
+%%% Exercise 6.10 %%%
+
+\exercise Consider the equation $x = 1 - \e^{-cx}$, where $c$ is a known
+parameter and $x$ is unknown.  This equation arises in a variety of
+situations, including the physics of contact processes, mathematical models
+of epidemics, and the theory of random graphs.
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\item Write a program to solve this equation for~$x$ using the relaxation
+  method for the case $c=2$.  Calculate your solution to an accuracy of at
+  least $10^{-6}$.
+\item Modify your program to calculate the solution for values of $c$ from
+  0 to 3 in steps of 0.01 and make a plot of $x$ as a function of~$c$.  You
+  should see a clear transition from a regime in which $x=0$ to a regime of
+  nonzero~$x$.  This is another example of a phase transition.  In physics
+  this transition is known as the \defn{percolation transition}; in
+  epidemiology it is the \defn{epidemic threshold}.
+\end{enumerate}
+
+
+%%% Exercise 6.11 %%%
+
+\exercise \textbf{Overrelaxation}
+
+\exskip If you did not already do Exercise~6.10, you should do it before
+this one.
+
+The ordinary relaxation method involves iterating the equation $x' = f(x)$,
+starting from an initial guess, until it converges.  As we have seen, this
+is often a fast and easy way to find solutions to nonlinear equations.
+However, it is possible in some cases to make the method work even faster
+using the technique of \defn{overrelaxation}.  Suppose our initial guess at
+the solution of a particular equation is, say, $x=1$, and the final, true
+solution is $x=5$.  After the first step of the iterative process, we might
+then see a value of, say, $x=3$.  In the overrelaxation method, we observe
+this value and note that $x$ is increasing, then we deliberately overshoot
+the calculated value, in the hope that this will get us closer to the final
+solution---in this case we might pass over $x=3$ and go straight to a value
+of $x=4$ perhaps, which is closer to the final solution of $x=5$ and hence
+should get us to that solution quicker.  The overrelaxation method
+provides a formula for performing this kind of overshooting in a controlled
+fashion and often, though not always, it does get us to our solution
+faster.  In detail, it works as follows.
+
+We can rewrite the equation $x'=f(x)$ in the form $x' = x + \Delta x$,
+where
+\begin{displaymath}
+\Delta x = x' - x = f(x) - x.
+\end{displaymath}
+The overrelaxation method involves iteration of the modified equation
+\begin{displaymath}
+x' = x + (1+\omega)\,\Delta x,
+\end{displaymath}
+(keeping the definition of $\Delta x$ the same).  If the parameter~$\omega$
+is zero, then this is the same as the ordinary relaxation method, but for
+$\omega>0$ the method takes the amount $\Delta x$ by which the value of $x$
+would have been changed and changes by a little more.  Using $\Delta
+x=f(x)-x$, we can also write $x'$ as
+\begin{displaymath}
+x' = x + (1+\omega) \bigl[ f(x) - x \bigr]
+   = (1+\omega) f(x) - \omega x,
+\end{displaymath}
+which is the form in which it is usually written.
+
+For the method to work the value of $\omega$ must be chosen correctly,
+although there is some wiggle room---there is an optimal value, but other
+values close to it will typically also give good results.  Unfortunately,
+there is no general theory that tells us what the optimal value is.
+Usually it is found by trial and error.
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\item Derive an equivalent of Eq.~(6.81) for the overrelaxation method and
+  hence show that the error on~$x'$, the equivalent of Eq.~(6.83), is given
+  by
+\begin{displaymath}
+\epsilon' \simeq {x-x'\over1-1/[(1+\omega) f'(x)-\omega]}.
+\end{displaymath}
+\item Consider again the equation $x=1-\e^{-cx}$ that we solved in
+  Exercise~6.10.  Take the program you wrote for part~(a) of that exercise,
+  which solved the equation for the case~$c=2$, and modify it to print out
+  the number of iterations it takes to converge to a solution accurate to
+  $10^{-6}$.
+\item Now write a new program (or modify the previous one) to solve the
+  same equation $x=1-\e^{-cx}$ for $c=2$, again to an accuracy of
+  $10^{-6}$, but this time using overrelaxation.  Have your program print
+  out the answers it finds along with the number of iterations it took to
+  find them.  Experiment with different values of $\omega$ to see how fast
+  you can get the method to converge.  A value of $\omega=0.5$ is a
+  reasonable starting point.  With some trial and error you should be able
+  to get the calculation to converge about twice as fast as the simple
+  relaxation method, i.e.,~in about half as many iterations.
+\item Are there any circumstances under which using a value $\omega<0$
+  would help us find a solution faster than we can with the ordinary
+  relaxation method?  (Hint: The answer is yes, but why?)
+\end{enumerate}
+
+
+%%% Exercise 6.12 %%%
+
+\exercise The biochemical process of \defn{glycolysis}, the
+  breakdown of glucose in the body to release energy, can be modeled by the
+  equations
+\begin{displaymath}
+{\dd x\over\dd t} = -x + ay + x^2 y, \qquad
+{\dd y\over\dd t} = b - ay - x^2 y.
+\end{displaymath}
+Here $x$ and $y$ represent concentrations of two chemicals, ADP and F6P,
+and $a$ and $b$ are positive constants.  One of the important features of
+nonlinear linear equations like these is their \defn{stationary
+  points}, meaning values of $x$ and $y$ at which the derivatives of both
+variables become zero simultaneously, so that the variables stop changing
+and become constant in time.  Setting the derivatives to zero above, the
+stationary points of our glycolysis equations are solutions of
+\begin{displaymath}
+-x + ay + x^2 y = 0, \qquad b - ay - x^2 y = 0.
+\end{displaymath}
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\item Demonstrate analytically that the solution of these equations is
+\begin{displaymath}
+x = b,\qquad y = {b\over a+b^2}.
+\end{displaymath}
+\item Show that the equations can be rearranged to read
+\begin{displaymath}
+x = y(a+x^2),\qquad y = {b\over a+x^2}
+\end{displaymath}
+and write a program to solve these for the stationary point using the
+relaxation method with $a=1$ and $b=2$.  You should find that the method
+fails to converge to a solution in this case.
+\item Find a different way to rearrange the equations such that when you
+  apply the relaxation method again it now converges to a fixed point and
+  gives a solution.  Verify that the solution you get agrees with part~(a).
+\end{enumerate}
+
+
+%%% Exercise 6.13 %%%
+
+\exercise \textbf{Wien's displacement constant}
+
+\exskip Planck's radiation law tells us that
+the intensity of radiation per unit area and per unit wavelength~$\lambda$
+from a black body at temperature~$T$~is
+\begin{displaymath}
+  I(\lambda) = {2\pi hc^2\lambda^{-5}\over\e^{hc/\lambda k_BT}-1}\,,
+\end{displaymath}
+where $h$~is Planck's constant, $c$~is the speed of light, and $k_B$ is
+Boltzmann's constant.
+
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\item Show by differentiating that the wavelength~$\lambda$ at which the
+  emitted radiation is strongest is the solution of the equation
+\begin{displaymath}
+5 \e^{-hc/\lambda k_BT} + {hc\over\lambda k_BT} - 5 = 0.
+\end{displaymath}
+Make the substitution $x=hc/\lambda k_BT$ and hence show that the
+wavelength of maximum radiation obeys the \defn{Wien displacement
+  law}:
+\begin{displaymath}
+\lambda = {b\over T}\,,
+\end{displaymath}
+where the so-called \defn{Wien displacement constant} is $b=hc/k_Bx$, and
+$x$ is the solution to the nonlinear equation
+\begin{displaymath}
+5 \e^{-x} + x - 5 = 0.
+\end{displaymath}
+\item Write a program to solve this equation to an accuracy
+  of~$\epsilon=10^{-6}$ using the binary search method, and hence find a
+  value for the displacement constant.
+\item The displacement law is the basis for the method of
+  \defn{optical pyrometry}, a method for measuring the temperatures
+  of objects by observing the color of the thermal radiation they emit.
+  The method is commonly used to estimate the surface temperatures of
+  astronomical bodies, such as the Sun.  The wavelength peak in the
+  Sun's emitted radiation falls at $\lambda=502\,\textrm{nm}$.  From the
+  equations above and your value of the displacement constant, estimate the
+  surface temperature of the Sun.
+\end{enumerate}
+
+
+%%% Exercise 6.14 %%%
+
+\exercise Consider a square potential well of width~$w$, with walls
+of height~$V$:
+\smallskip
+\begin{center}
+\includegraphics[width=5.5cm]{smallwell.eps}
+\end{center}
+Using Schr\"odinger's equation, it can be shown that the allowed
+energies~$E$ of a single quantum particle of mass~$m$ trapped in the well
+are solutions of
+\begin{displaymath}
+\tan \sqrt{w^2mE/2\hbar^2} = \left\lbrace\begin{array}{ll}
+  \sqrt{(V-E)/E} & \qquad\mbox{for the even numbered states,} \\
+  - \sqrt{E/(V-E)}\pmstrut & \qquad\mbox{for the odd numbered states,}
+\end{array}\right.
+\end{displaymath}
+where the states are numbered starting from~0, with the ground state being
+state~0, the first excited state being state~1, and so forth.
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\item For an electron (mass $9.1094\times10^{-31}\,$kg) in a well with $V =
+  20\,$eV and $w = 1\,$nm, write a Python program to plot the three
+  quantities
+\begin{displaymath}
+y_1 = \tan \sqrt{w^2mE/2\hbar^2},\qquad
+y_2 = \sqrt{V-E\over E},\qquad
+y_3 = -\sqrt{E\over V-E},
+\end{displaymath}
+on the same graph, as a function of~$E$ from $E=0$ to $E=20\,$eV.  From
+your plot make approximate estimates of the energies of the first six
+energy levels of the particle.
+\item Write a second program to calculate the values of the first six
+  energy levels in electron volts to an accuracy of $0.001\,$eV using
+  binary search.
+\end{enumerate}
+
+
+%%% Exercise 6.15 %%%
+
+\exercise \textbf{The roots of a polynomial}
+
+\exskip Consider the sixth-order polynomial
+\begin{displaymath}
+P(x) = 924 x^6 - 2772 x^5 + 3150 x^4 - 1680 x^3 + 420 x^2 - 42 x + 1.
+\end{displaymath}
+There is no general formula for the roots of a sixth-order polynomial, but
+one can find them easily enough using a computer.
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\item Make a plot of $P(x)$ from $x=0$ to $x=1$ and by inspecting it find
+  rough values for the six roots of the polynomial---the points at which
+  the function is zero.
+\item Write a Python program to solve for the positions of all six roots to
+  at least ten decimal places of accuracy, using Newton's method.
+\end{enumerate}
+Note that the polynomial in this example is just the sixth Legendre
+polynomial (mapped onto the interval from zero to one), so the calculation
+performed here is the same as finding the integration points for 6-point
+Gaussian quadrature (see Section~5.6.2), and indeed Newton's method is the
+method of choice for calculating Gaussian quadrature points.
+
+
+%%% Exercise 6.16 %%%
+
+\exercise \textbf{The Lagrange point}
+
+\exskip There is a magical point between the Earth and the Moon, called the
+$L_1$ Lagrange point, at which a satellite will orbit the Earth in perfect
+synchrony with the Moon, staying always in between the two.  This works
+because the inward pull of the Earth and the outward pull of the Moon
+combine to create exactly the needed centripetal force that keeps the
+satellite in its orbit.  Here's the setup: \bigskip
+\begin{center}
+\includegraphics[width=10.5cm]{l1.eps}
+\end{center}
+
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\item Assuming circular orbits, and assuming that the Earth is much more
+  massive than either the Moon or the satellite, show that the distance~$r$
+  from the center of the Earth to the $L_1$ point satisfies
+\begin{displaymath}
+{GM\over r^2} - {Gm\over(R-r)^2} = \omega^2 r,
+\end{displaymath}
+where $M$ and $m$ are the Earth and Moon masses, $G$ is Newton's
+gravitational constant, and $\omega$~is the angular velocity of both the
+Moon and the satellite.
+\item The equation above is a fifth-order polynomial equation in~$r$ (also
+  called a quintic equation).  Such equations cannot be solved exactly in
+  closed form, but it's straightforward to solve them numerically.  Write a
+  program that uses either Newton's method or the secant method to solve
+  for the distance~$r$ from the Earth to the $L_1$ point.  Compute a
+  solution accurate to at least four significant figures.
+
+  The values of the various parameters are:
+\begin{align*}
+G &= 6.674\times10^{-11}\,\mathrm{m}^3\mathrm{kg}^{-1}\mathrm{s}^{-2}, \\
+M &= 5.974\times10^{24}\,\mathrm{kg}, \\
+m &= 7.348\times10^{22}\,\mathrm{kg}, \\
+R &= 3.844\times10^8\,\mathrm{m}, \\
+\omega &= 2.662\times10^{-6}\,\mathrm{s}^{-1}.
+\end{align*}
+You will also need to choose a suitable starting value for~$r$, or two
+starting values if you use the secant method.
+\end{enumerate}
+
+
+%%% Exercise 6.17 %%%
+
+\exercise \textbf{Nonlinear circuits}
+
+\exskip Exercise~6.1 used regular simultaneous equations to solve for the
+behavior of circuits of resistors.  Resistors are linear---current is
+proportional to voltage---and the resulting equations we need to solve are
+therefore also linear and can be solved by standard matrix methods.  Real
+circuits, however, often include nonlinear components.  To solve for the
+behavior of these circuits we need to solve nonlinear equations.
+
+\newpage
+Consider the following simple circuit, a variation on the classic
+Wheatstone bridge:
+\smallskip
+\begin{center}
+\includegraphics[width=5.5cm]{nlcircuit.eps}
+\end{center}
+The resistors obey the normal Ohm law, but the diode obeys the diode
+equation:
+\begin{displaymath}
+I = I_0 (\e^{V/V_T} - 1),
+\end{displaymath}
+where $V$ is the voltage across the diode and $I_0$ and $V_T$ are
+constants.
+
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\item The Kirchhoff current law says that the total net current flowing
+  into or out of every point in a circuit must be zero.  Applying the law
+  to voltage~$V_1$ in the circuit above we get
+\begin{displaymath}
+{V_1-V_+\over R_1} + {V_1\over R_2}
+  + I_0\bigl[\e^{(V_1-V_2)/V_T} - 1\bigr] = 0.
+\end{displaymath}
+Derive the corresponding equation for voltage~$V_2$.
+\item Solve the two nonlinear equations for the voltages~$V_1$ and $V_2$
+  with the conditions
+\begin{align*}
+V_+ &= 5\,\textrm{V}, \\
+R_1 &= 1\,\mathrm{k}\Omega, \qquad
+R_2 = 4\,\mathrm{k}\Omega, \qquad
+R_3 = 3\,\mathrm{k}\Omega, \qquad
+R_4 = 2\,\mathrm{k}\Omega, \\
+I_0 &= 3\,\textrm{nA},\qquad
+V_T = 0.05\,\textrm{V}.
+\end{align*}
+You can use either the relaxation method or Newton's method to solve the
+equations.  If you use Newton's method you can solve Eq.~(6.108) for
+$\Delta\vec{x}$ using the function \verb|solve()| from \verb|numpy.linalg|
+if you want to, but in this case the matrix is only a $2\times2$ matrix, so
+it's easy to calculate the inverse directly too.
+\item The electronic engineer's rule of thumb for diodes is that the
+  voltage across a (forward biased) diode is always about 0.6 volts.
+  Confirm that your results agree with this rule.
+\end{enumerate}
+
+
+%%% Exercise 6.18 %%%
+
+\exercise \textbf{The temperature of a light bulb}
+
+\exskip An incandescent light bulb is a simple device---it contains a
+filament, usually made of tungsten, heated by the flow of electricity until
+it becomes hot enough to radiate thermally.  Essentially all of the power
+consumed by such a bulb is radiated as electromagnetic energy, but some of
+the radiation is not in the visible wavelengths, which means it is useless
+for lighting purposes.
+
+Let us define the efficiency of a light bulb to be the fraction of the
+radiated energy that falls in the visible band.  It's a good approximation
+to assume that the radiation from a filament at temperature~$T$ obeys the
+Planck radiation law, meaning that the power radiated per unit
+wavelength~$\lambda$ obeys
+\begin{displaymath}
+  I(\lambda) = 2\pi A hc^2 {\lambda^{-5}\over\e^{hc/\lambda k_BT}-1},
+\end{displaymath}
+where $A$ is the surface area of the filament, $h$~is Planck's constant,
+$c$~is the speed of light, and $k_B$ is Boltzmann's constant.  The visible
+wavelengths run from $\lambda_1=390\,$nm to $\lambda_2=750\,$nm, so the
+total energy radiated in the visible window is
+$\int_{\lambda_1}^{\lambda_2} I(\lambda)\>\dd\lambda$ and the total energy
+at all wavelengths is $\int_0^\infty I(\lambda)\>\dd\lambda$.  Dividing one
+expression by the other and substituting for $I(\lambda)$ from above, we
+get an expression for the efficiency~$\eta$ of the light bulb thus:
+\begin{displaymath}
+\eta = {\int_{\lambda_1}^{\lambda_2} \lambda^{-5}/(\e^{hc/\lambda
+        k_BT}-1) \>\dd\lambda\over
+        \int_0^\infty \lambda^{-5}/(\e^{hc/\lambda k_BT}-1) \>\dd\lambda},
+\end{displaymath}
+where the leading constants and the area~$A$ have canceled out.  Making
+the substitution $x=hc/\lambda k_BT$, this can also be written as
+\begin{displaymath}
+\eta = {\int_{hc/\lambda_2 k_BT}^{hc/\lambda_1 k_BT} x^3/(\e^x-1) \>\dd x
+        \over \int_0^\infty x^3/(\e^x-1) \>\dd x}
+     = {15\over\pi^4}
+       \int_{hc/\lambda_2 k_BT}^{hc/\lambda_1 k_BT}
+       {x^3\over\e^x-1} \>\dd x,
+\end{displaymath}
+where we have made use of the known exact value of the integral in the
+denominator.
+
+\begin{enumerate}\setlength{\itemsep}{0pt}
+\item Write a Python function that takes a temperature~$T$ as its argument
+  and calculates the value of~$\eta$ for that temperature from the formula
+  above.  The integral in the formula cannot be done analytically, but you
+  can do it numerically using any method of your choice.  (For instance,
+  Gaussian quadrature with 100 sample points works fine.)  Use your
+  function to make a graph of~$\eta$ as a function of temperature between
+  $300\,$K and $10\,000\,$K.  You should see that there is an intermediate
+  temperature where the efficiency is a maximum.
+\item Calculate the temperature of maximum efficiency of the light bulb to
+  within $1\,$K using golden ratio search.  (Hint: An accuracy of $1\,$K is
+  the equivalent of a few parts in ten thousand in this case.  To get this
+  kind of accuracy in your calculation you'll need to use values for the
+  fundamental constants that are suitably accurate, i.e.,~you will need
+  values accurate to several significant figures.)
+\item Is it practical to run a tungsten-filament light bulb at the
+  temperature you found?  If not, why not?
+\end{enumerate}
+
+\end{exercises}
+
+\end{document}

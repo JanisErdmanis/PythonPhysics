@@ -1,0 +1,49 @@
+% Computational Physics by M. Newman
+% Setup file for exercises
+
+% Packages
+\usepackage{mathpazo}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{calrsfs}
+\usepackage{fancyvrb}
+
+% Formatting
+\setlength{\textwidth}{17.5cm}
+\setlength{\textheight}{24.0cm}
+\setlength{\evensidemargin}{2.5cm}
+\setlength{\oddsidemargin}{-0.6cm}
+\setlength{\topmargin}{-2.3cm}
+\setlength{\textfloatsep}{0pt}
+\setcounter{secnumdepth}{0}
+\renewcommand{\baselinestretch}{1.06}
+
+% Macros
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\e}{\mathrm{e}}
+\newcommand{\half}{\tfrac12}
+\newcommand{\av}[1]{\langle#1\rangle}
+\newcommand{\var}{\mathop\mathrm{var}}
+\newcommand{\Ord}{\mathrm{O}}
+\renewcommand{\Re}{\mathop\mathrm{Re}\nolimits}
+\renewcommand{\Im}{\mathop\mathrm{Im}\nolimits}
+\newcommand{\mat}{\mathbf}
+\renewcommand{\vec}{\mathbf}
+\newcommand{\defn}{\textit}
+\newcommand{\exskip}{\nopagebreak\medskip\noindent}
+\newcommand{\pmstrut}{\rule{0pt}{13pt}}
+
+% Environments
+\newcounter{chapter}
+\setcounter{chapter}{2}
+\newcounter{exercise}
+\renewcommand{\theexercise}{\arabic{chapter}.\arabic{exercise}}
+\newenvironment{exercises}{\vspace{2ex plus0.5ex minus0.5ex}
+  \renewcommand{\labelenumi}{\alph{enumi})}}%
+    {\par\vspace{1ex plus0.5ex minus0.5ex}}
+\newcommand{\exercise}{\refstepcounter{exercise}%
+  \par\vspace{4ex plus1ex minus1ex}%
+  \noindent\textbf{Exercise \theexercise: }}
+
+\DefineVerbatimEnvironment{code}{Verbatim}{xleftmargin=\parindent}
