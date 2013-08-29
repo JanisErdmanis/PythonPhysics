@@ -1,8 +1,11 @@
 from numpy import zeros,empty
 from pylab import plot,show
 
+from visual import sphere, display, rate
+from numpy import linspace, empty,sin
+
 # Constants
-N = 26
+N = 20
 C = 1.0
 m = 1.0
 k = 6.0
@@ -42,6 +45,34 @@ for i in range(N-2,-1,-1):
     x[i] = v[i] - A[i,i+1]*x[i+1]
 
 # Make a plot using both dots and lines
-plot(x)
-plot(x,"ko")
-show()
+#==============================================================================
+# plot(x)
+# plot(x,"ko")
+# show()
+#==============================================================================
+
+eq_pos = linspace(0,2*N,N)
+s = empty(N,sphere)
+for i in range(N):
+	s[i] = sphere()
+	s[i].radius = 0.3
+	
+def plot_positions(positions):
+	
+	
+	for i,pos in enumerate(positions):
+		#s[i] = sphere()
+
+		s[i].pos = [pos,0,0]
+
+plot_positions(eq_pos)
+d = display()
+d.autoscale=False
+
+t = 0
+while True:
+	
+	rate(30)
+	pos = eq_pos + x*sin(omega*t)
+	plot_positions(pos)
+	t +=1

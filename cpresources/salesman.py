@@ -7,7 +7,7 @@ N = 25
 R = 0.02
 Tmax = 10.0
 Tmin = 1e-3
-tau = 1e4
+tau = 1e5
 
 # Function to calculate the magnitude of a vector
 def mag(x):

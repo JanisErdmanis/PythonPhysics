@@ -37,3 +37,14 @@ for m in range(N-1,-1,-1):
         x[m] -= A[m,i]*x[i]
 
 print(x)
+
+
+### Checking if correct 
+
+from numpy.linalg import solve
+A = array([[ 4,-1,-1,-1 ],
+           [ -1,0,3,0 ],
+           [ -1,3,0,-1 ],
+           [ -1,-1,0,4]], float)
+v = array([ 5, 5, 0, 0 ],float)
+print(solve(A,v))

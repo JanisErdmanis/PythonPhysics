@@ -31,7 +31,7 @@
 # You may use, share, or modify this file freely
 #
 ######################################################################
-
+from __future__ import division, print_function
 from numpy import copy
 
 def banded(Aa,va,up,down):
