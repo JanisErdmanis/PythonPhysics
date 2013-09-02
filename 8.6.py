@@ -5,7 +5,7 @@ Created on Fri Aug 16 12:58:37 2013
 @author: akels
 """
 from __future__ import division, print_function
-from numpy import arange,empty, array,sin
+from numpy import arange,empty, array
 from pylab import *
 
 class rksolve:
@@ -108,7 +108,7 @@ show()
 
 # Part E
 
-mu = 2
+mu = 4
 omega = 1
 
 def f(r,t):
@@ -125,24 +125,16 @@ prob.iterate(0,20,N=200)
 x = prob.solution[:,0]
 x_d = prob.solution[:,1]
 plot(x,x_d)
+show()
 
 
-mu = 4
 omega = 1
-
-def f(r,t):
-    x = r[0]
-    x_d = r[1]
-    fx = x_d
-    fx_d =  -omega**2*x + mu*(1-x**2)*x_d
-    return [fx,fx_d]
-
-
-prob = rksolve(f)
-prob.initial_conditions=[1,0]
-prob.iterate(0,20,N=10000)
-x = prob.solution[:,0]
-x_d = prob.solution[:,1]
-plot(x,x_d)
-
+for mu in [1,1.5,2,4]:
+	prob = rksolve(f)
+	prob.initial_conditions=[1,0]
+	prob.iterate(0,20,N=500)
+	x = prob.solution[:,0]
+	x_d = prob.solution[:,1]
+	plot(x,x_d,label=mu)
+legend()
 show()

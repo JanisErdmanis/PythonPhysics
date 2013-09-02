@@ -5,7 +5,7 @@ Created on Thu Aug 15 12:04:20 2013
 @author: akels
 """
 from __future__ import division, print_function
-from math import sin,pi
+from math import sin,cos,pi
 from numpy import array,arange
 from pylab import plot,xlabel,show
 

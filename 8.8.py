@@ -90,4 +90,5 @@ x = prob.solution[:,0]
 y = prob.solution[:,1]
 
 plot(x,y)
+show()
 #polar(theta,r)

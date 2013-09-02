@@ -1,0 +1,22 @@
+#!/usr/bin/ipython
+
+SOURCE = 'Maximum_likelihood.ipynb'
+TARGET =  SOURCE[:-5] + 'pdf'#'test.pdf'
+
+
+import os
+
+!mkdir build
+!cp $SOURCE build/test.ipynb
+
+os.chdir('build') 
+
+!ipython3 nbconvert --to latex --template basic test.ipynb
+
+!mkdir build_latex
+!xelatex -output-directory=build_latex test.tex
+
+!cp build_latex/test.pdf ../$TARGET
+
+os.chdir('../')
+!rm -rf build

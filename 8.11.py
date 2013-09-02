@@ -5,7 +5,8 @@ Created on Sun Aug 18 18:14:55 2013
 @author: akels
 """
 from __future__ import division, print_function
-from numpy import array,arange
+from numpy import array,arange,copy
+from pylab import *
 
 # Didn't work?
 
