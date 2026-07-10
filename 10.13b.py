@@ -88,4 +88,4 @@ while r*2<L//2:
 		ri = radius(i,j)
 		
 else:
-	print('Sucesfully filled')
+	print('successfully filled')
